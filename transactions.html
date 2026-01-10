@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Transaction History</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{box-sizing:border-box;}
+
+body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    background:#eef3f8;
+}
+
+/* Header */
+header{
+    background:#062b47;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+}
+
+header h1{
+    margin:0;
+    font-size:24px;
+}
+
+.profile-link{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    text-decoration:none;
+    color:white;
+}
+
+.profile-link img{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+}
+
+/* Main */
+main{
+    padding:25px;
+}
+
+/* Section Card */
+.section-box{
+    background:white;
+    padding:25px;
+    border-radius:14px;
+    margin-bottom:25px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+}
+
+h2{
+    margin:0 0 12px 0;
+    font-weight:600;
+    color:#062b47;
+}
+
+/* Controls */
+.filters, .toggle-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:10px;
+}
+
+input,select,button{
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    background:white;
+    outline:none;
+}
+
+input:focus,select:focus{
+    border-color:#0b6fa4;
+}
+
+/* Buttons */
+button{
+    background:#062b47;
+    color:white;
+    border:none;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#0b6fa4;
+}
+
+/* Table */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+
+th{
+    background:#062b47;
+    color:white;
+    text-align:left;
+}
+
+/* Pagination */
+.pagination{
+    margin-top:15px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+}
+
+.pagination button{
+    padding:8px 12px;
+    border-radius:6px;
+}
+
+</style>
+<script src="./assets/js/auth.js"></script>
+</head>
+
+<body>
+
+<header>
+    <h1>Transaction History</h1>
+
+    <a href="profile.html" class="profile-link">
+        <img src="icon2.png" alt="User Icon">
+        <span id="profile-text">Hi, User</span>
+    </a>
+</header>
+
+<main>
+
+<div class="section-box">
+<h2>Transactions</h2>
+
+<!-- Toggle Buttons -->
+<div class="toggle-buttons">
+    <button onclick="setView('all')">View All</button>
+    <button onclick="setView('expense')">Expenses Only</button>
+    <button onclick="setView('income')">Income Only</button>
+</div>
+
+<!-- Filters -->
+<div class="filters">
+    <input type="text" id="search-category" placeholder="Category / Keyword" onkeyup="renderTransactions()">
+    <input type="number" id="search-amount" placeholder="Amount" onkeyup="renderTransactions()">
+    <input type="date" id="start-date" onchange="renderTransactions()">
+    <input type="date" id="end-date" onchange="renderTransactions()">
+</div>
+
+<!-- Table -->
+<table id="transaction-table">
+<thead>
+<tr>
+<th>Date</th>
+<th>Type</th>
+<th>Category / Source</th>
+<th>Amount</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<!-- Pagination -->
+<div class="pagination" id="pagination"></div>
+
+</div>
+
+</main>
+
+<script>
+
+let username = localStorage.getItem('username') || "Deepa";
+document.getElementById('profile-text').innerText = `Hi, ${username}`;
+
+const expenses = JSON.parse(localStorage.getItem(username + '_expenses')) || [];
+const incomes = JSON.parse(localStorage.getItem(username + '_income')) || [];
+
+let allTransactions = [
+    ...expenses.map(e => ({...e, type:'Expense'})),
+    ...incomes.map(i => ({...i, type:'Income'}))
+];
+
+// Sort newest first
+allTransactions.sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+let currentView='all';
+let currentPage=1;
+const itemsPerPage=10;
+
+function setView(view){
+currentView=view;
+currentPage=1;
+renderTransactions();
+}
+
+function renderTransactions(){
+const tbody=document.querySelector('#transaction-table tbody');
+tbody.innerHTML='';
+
+const searchCategory=document.getElementById('search-category').value.toLowerCase();
+const searchAmount=parseFloat(document.getElementById('search-amount').value);
+const startDate=document.getElementById('start-date').value;
+const endDate=document.getElementById('end-date').value;
+
+let filtered=allTransactions.filter(t=>{
+let matchView=(currentView==='all')||
+(currentView==='expense'&&t.type==='Expense')||
+(currentView==='income'&&t.type==='Income');
+
+let matchCategory=(t.category?.toLowerCase().includes(searchCategory))||
+(t.source?.toLowerCase().includes(searchCategory))||
+(t.desc?.toLowerCase().includes(searchCategory));
+
+let matchAmount=!searchAmount||t.amount==searchAmount;
+let matchStart=!startDate||t.date>=startDate;
+let matchEnd=!endDate||t.date<=endDate;
+
+return matchView&&matchCategory&&matchAmount&&matchStart&&matchEnd;
+});
+
+// Pagination
+const totalPages=Math.ceil(filtered.length/itemsPerPage);
+const start=(currentPage-1)*itemsPerPage;
+const end=start+itemsPerPage;
+const pageItems=filtered.slice(start,end);
+
+pageItems.forEach(t=>{
+const tr=document.createElement('tr');
+tr.innerHTML=`
+<td>${t.date}</td>
+<td>${t.type}</td>
+<td>${t.category || t.source}</td>
+<td>₹${t.amount}</td>
+<td>${t.desc || ""}</td>
+`;
+tbody.appendChild(tr);
+});
+
+renderPagination(totalPages);
+}
+
+function renderPagination(totalPages){
+const paginationDiv=document.getElementById('pagination');
+paginationDiv.innerHTML='';
+
+for(let i=1;i<=totalPages;i++){
+const btn=document.createElement('button');
+btn.innerText=i;
+if(i===currentPage)btn.disabled=true;
+btn.onclick=()=>{currentPage=i;renderTransactions();};
+paginationDiv.appendChild(btn);
+}
+}
+
+renderTransactions();
+
+</script>
+
+</body>
+</html>

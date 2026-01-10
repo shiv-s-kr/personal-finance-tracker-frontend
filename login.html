@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Personal Finance Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #062b45, #0e4166, #0b6fa4);
+            background-size: 400% 400%;
+            animation: moveGradient 10s infinite ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Background Animation */
+        @keyframes moveGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            width: 100%;
+            background: #041c32;
+            color: white;
+            padding: 18px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ===== LOGIN CARD ===== */
+        .container {
+            width: 400px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 35px;
+            margin-top: 90px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            color: white;
+        }
+
+        /* Heading */
+        h2 {
+            margin: 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Labels */
+        label {
+            margin-top: 12px;
+            display: block;
+            font-weight: 500;
+        }
+
+        /* Inputs */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input::placeholder {
+            color: #e3e3e3;
+        }
+
+        input:focus {
+            border-color: #9ad2ff;
+        }
+
+        /* Options Row */
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .options a {
+            text-decoration: none;
+            color: #bce5ff;
+            font-weight: 600;
+        }
+
+        .options a:hover {
+            text-decoration: underline;
+        }
+
+        /* Button */
+        .btn {
+            width: 100%;
+            padding: 11px;
+            margin-top: 18px;
+            background: #0b6fa4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:hover {
+            background: #0e8ed1;
+            transform: translateY(-2px);
+        }
+
+        /* Messages */
+        .error {
+            color: #ff2e2e;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .success {
+            color: #009d0b;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        /* Register Link */
+        .register-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .register-link a {
+            color: #a7ddff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="navbar">
+        Personal Finance Tracker
+    </div>
+
+    <div class="container">
+
+        <h2>Login</h2>
+
+        <form id="loginForm">
+
+            <label>Email</label>
+            <input type="email" id="email" placeholder="Enter Email">
+
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter Password">
+
+            <div class="options">
+                <label>
+                    <input type="checkbox" id="rememberMe">
+                    Remember Me
+                </label>
+
+                <a href="#">Forgot Password?</a>
+            </div>
+
+            <button class="btn" type="submit">Login</button>
+
+            <p class="error" id="errorMsg"></p>
+            <p class="success" id="successMsg"></p>
+
+            <div class="register-link">
+                Do not have an account?
+                <a href="register.html">Register here</a>
+            </div>
+
+        </form>
+    </div>
+
+    <script src="./assets/js/login.js">
+
+    </script>
+
+    <!-- Functionality Unchanged -->
+    <script>
+
+        const loginForm = document.getElementById("loginForm");
+
+        loginForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value.trim();
+            let error = document.getElementById("errorMsg");
+            let success = document.getElementById("successMsg");
+
+            error.innerText = "";
+            success.innerText = "";
+
+            if (email === "" || password === "") {
+                error.innerText = "Email and Password are required";
+                return;
+            }
+
+            let savedEmail = localStorage.getItem("userEmail");
+            let savedPassword = localStorage.getItem("userPassword");
+
+            if (email === savedEmail && password === savedPassword) {
+                success.innerText = "Login Successful! Redirecting...";
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 1500);
+            } else {
+                error.innerText = "Invalid email or password";
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>

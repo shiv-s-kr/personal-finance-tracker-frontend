@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration | Personal Finance Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #062b45, #0e4166, #0b6fa4);
+            background-size: 400% 400%;
+            animation: gradientMove 10s infinite ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Background breathing effect */
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            width: 100%;
+            background: #041c32;
+            color: white;
+            padding: 18px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            z-index: 5;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            width: 400px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-top: 90px;
+            color: white;
+        }
+
+        /* Title */
+        h2 {
+            margin: 0 0 10px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Labels */
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        /* Inputs */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input::placeholder {
+            color: #e3e3e3;
+        }
+
+        input:focus {
+            border-color: #9ad2ff;
+        }
+
+        /* Button */
+        .btn {
+            width: 100%;
+            padding: 11px;
+            margin-top: 18px;
+            font-size: 16px;
+            background: #0b6fa4;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:hover {
+            background: #0e8ed1;
+            transform: translateY(-2px);
+        }
+
+        /* Messages */
+        .error {
+            color: #f20a0a;
+            font-size: 13px;
+            margin: 3px 0;
+        }
+
+        .success {
+            color: #00ff37;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .login-link a {
+            color: #a7ddff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script src="./assets/js/register.js"> </script>
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <div class="navbar">
+        Personal Finance Tracker
+    </div>
+
+    <!-- ===== REGISTRATION CARD ===== -->
+    <div class="container">
+        <h2>Create Account</h2>
+
+        <form id="registerForm">
+
+            <label>Full Name</label>
+            <input type="text" id="fullname" placeholder="Enter Full Name">
+            <p id="nameError" class="error"></p>
+
+            <label>Email ID</label>
+            <input type="email" id="email" placeholder="Enter Email">
+            <p id="emailError" class="error"></p>
+
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter Password">
+            <p id="passwordError" class="error"></p>
+
+            <label>Confirm Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password">
+            <p id="confirmError" class="error"></p>
+
+            <button type="submit" class="btn">Register</button>
+
+            <p class="success" id="successMsg"></p>
+
+            <div class="login-link">
+                Already have an account?
+                <a href="login.html">Login here</a>
+            </div>
+        </form>
+    </div>
+
+
+    <script>
+        const form = document.getElementById("registerForm");
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            document.getElementById("nameError").innerText = "";
+            document.getElementById("emailError").innerText = "";
+            document.getElementById("passwordError").innerText = "";
+            document.getElementById("confirmError").innerText = "";
+            document.getElementById("successMsg").innerText = "";
+
+            let fullname = document.getElementById("fullname").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value.trim();
+            let confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+            let isValid = true;
+
+            if (fullname === "") {
+                document.getElementById("nameError").innerText = "Full Name is required";
+                isValid = false;
+            }
+
+            if (email === "") {
+                document.getElementById("emailError").innerText = "Email is required";
+                isValid = false;
+            } else if (!email.includes("@")) {
+                document.getElementById("emailError").innerText = "Please enter a valid email";
+                isValid = false;
+            }
+
+            if (password.length < 6) {
+                document.getElementById("passwordError").innerText = "Password must be at least 6 characters";
+                isValid = false;
+            }
+
+            if (password !== confirmPassword) {
+                document.getElementById("confirmError").innerText = "Passwords do not match";
+                isValid = false;
+            }
+
+            if (isValid) {
+                document.getElementById("successMsg").innerText = "Registration Successful! Redirecting...";
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 1500);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Income Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: #eef3f8;
+        }
+
+        header {
+            padding: 18px;
+            text-align: center;
+            background: #062b47;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        header p {
+            margin-top: 5px;
+        }
+
+        main {
+            padding: 25px;
+        }
+
+        /* Section Card */
+        .section-box {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Headings */
+        h2 {
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            color: #062b47;
+        }
+
+        /* Inputs */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #062b47;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: white;
+            color: #333;
+            outline: none;
+        }
+
+        textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #0b6fa4;
+        }
+
+        /* Button */
+        button {
+            padding: 10px 20px;
+            background: #062b47;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0b6fa4;
+        }
+
+        .success {
+            color: green;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .filters input,
+        .filters select {
+            width: auto;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #062b47;
+            color: white;
+            text-align: left;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .edit-btn {
+            background: #36A2EB;
+        }
+
+        .delete-btn {
+            background: #FF6384;
+        }
+
+        .action-btn:hover {
+            opacity: .9;
+        }
+    </style>
+    <script src="./assets/js/auth.js"></script>
+    <style>
+        .income-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .income-actions button {
+            padding: 0.25rem 0.75rem;
+            margin-left: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .income-actions button:first-child {
+            background: #3498db;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        #success-msg {
+            display: none;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+    </style>
+    <style>
+        .btn-edit {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+            padding: 5px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Income Management</h1>
+        <p>Welcome, <span id="username">User</span>!</p>
+    </header>
+
+    <main>
+
+        <div class="section-box">
+            <h2>Add Income</h2>
+
+            <div id="add-income-form">
+
+                <div class="form-group">
+                    <label>Income Source</label>
+                    <select id="income-source">
+                        <option value="">Select Source</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Bonus">Bonus</option>
+                        option value="Freelance">Freelance</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Income Amount</label>
+                    <input type="number" id="income-amount" placeholder="Enter amount">
+                </div>
+
+                <div class="form-group">
+                    <label>Frequency</label>
+                    <select id="income-frequency">
+                        <option value="">Select Frequency</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="One-time">One-time</option>
+                    </select>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="income-date">
+                </div>
+
+                <div class="form-group">
+                    <label>Description (optional)</label>
+                    <textarea id="income-desc" placeholder="Add description if needed"></textarea>
+                </div>
+
+                <button onclick="addIncome()">Add Income</button>
+                <p id="success-msg" class="success"></p>
+
+            </div>
+        </div>
+
+        <div class="section-box">
+            <h2>Manage Income</h2>
+
+            <div class="filters">
+                <input type="text" id="search" placeholder="Search description..." onkeyup="renderIncome()">
+
+                <select id="filter-source" onchange="renderIncome()">
+                    <option value="">All Sources</option>
+                    <option value="Salary">Salary</option>
+                    <option value="Bonus">Bonus</option>
+                    <option value="Freelance">Freelance</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <input type="date" id="start-date" onchange="renderIncome()">
+                <input type="date" id="end-date" onchange="renderIncome()">
+            </div>
+
+            <table id="income-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Source</th>
+                        <th>Amount</th>
+                        <th>Frequency</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+
+    </main>
+
+    <script src="./assets/js/income.js"></script>
+</body>
+
+</html>
