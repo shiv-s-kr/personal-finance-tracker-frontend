@@ -295,6 +295,63 @@
     </style>
     <script src="./assets/js/main.js"></script>
 
+    <style>
+        .directions {
+  background: #f8fafc;
+  border-left: 5px solid #3b82f6;
+  padding: 20px 24px;
+  border-radius: 10px;
+  margin-top: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.directions h3 {
+  margin: 0 0 15px;
+  font-size: 1.2rem;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.directions h3::before {
+  content: "💡";
+  font-size: 1.4rem;
+}
+
+.directions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.directions li {
+  background: #ffffff;
+  padding: 12px 14px 12px 42px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  position: relative;
+  font-size: 0.95rem;
+  color: #334155;
+  line-height: 1.4;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.directions li::before {
+  content: "✔";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.directions li:last-child {
+  margin-bottom: 0;
+}
+
+    </style>
 </head>
 
 <body>

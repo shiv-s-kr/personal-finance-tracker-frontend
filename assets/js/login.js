@@ -1,4 +1,7 @@
 // login.js - Add this script to your login.html or link it as <script src="login.js"></script>
+const baseUrl = "http://localhost:8080";
+const url = baseUrl+"/api/v1/auth/login";
+console.log(url);
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('loginForm');
@@ -18,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const password = document.getElementById('password').value;
 
         try {
-            const response = await fetch('https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/auth/login', {
+            const response = await fetch(baseUrl+'/api/v1/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

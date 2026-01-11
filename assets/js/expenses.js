@@ -1,5 +1,6 @@
 // expenses.js - COMPLETE CRUD
-const EXPENSE_API = 'https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/expenses';
+const baseUrl = "http://localhost:8080"
+const EXPENSE_API = baseUrl + '/api/v1/expenses';
 let allExpenses = [];
 let editMode = false;
 let editingExpenseId = null;
@@ -85,7 +86,7 @@ async function addExpense() {
             body: JSON.stringify(expenseData)
         });
         const result = await response.json();
-        
+
         if (result.success) {
             showMessage('Expense added!', true);
             resetForm();
@@ -111,7 +112,7 @@ function editExpense(id) {
     editingExpenseId = id;
     addExpenseBtn.textContent = 'Update Expense';
     addExpenseBtn.onclick = updateExpense;
-    
+
     document.querySelector('#add-expense-form').scrollIntoView();
     showMessage('Edit mode activated', true);
 }
@@ -135,9 +136,13 @@ async function updateExpense() {
             body: JSON.stringify(expenseData)
         });
         const result = await response.json();
-        
+
         if (result.success) {
             showMessage('Expense updated!', true);
+            editMode = false;
+            editingExpenseId = "";
+            addExpenseBtn.textContent = 'Add Expense';
+            resetForm()
             exitEditMode();
             renderExpenses();
         } else {
@@ -181,11 +186,11 @@ function filterExpenses(expenses) {
     const endDate = elements.endDate.value;
 
     return expenses.filter(expense => {
-        const matchesSearch = !search || 
+        const matchesSearch = !search ||
             (expense.description && expense.description.toLowerCase().includes(search));
         const matchesCategory = !categoryFilter || expense.category === categoryFilter;
-        const matchesDate = (!startDate || expense.date >= startDate) && 
-                           (!endDate || expense.date <= endDate);
+        const matchesDate = (!startDate || expense.date >= startDate) &&
+            (!endDate || expense.date <= endDate);
         return matchesSearch && matchesCategory && matchesDate;
     });
 }
@@ -194,6 +199,7 @@ async function renderExpenses() {
     try {
         const result = await fetchExpenses(currentPage, currentLimit);
         allExpenses = result.data || [];
+        console.log(allExpenses)
         const pagination = result.pagination || {};
 
         // Auto-create pagination
@@ -245,7 +251,7 @@ function changeExpensePage(direction) {
 document.addEventListener('DOMContentLoaded', () => {
     elements.date.valueAsDate = new Date();
     renderExpenses();
-    
+
     elements.search.addEventListener('input', () => { currentPage = 1; renderExpenses(); });
     elements.filterCategory.addEventListener('change', () => { currentPage = 1; renderExpenses(); });
     elements.startDate.addEventListener('change', () => { currentPage = 1; renderExpenses(); });

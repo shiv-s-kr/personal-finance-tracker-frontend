@@ -1,5 +1,6 @@
 // budget.js - COMPLETE IMPLEMENTATION
-const BUDGET_API = 'https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/budgets';
+const baseUrl = "http://localhost:8080"
+const BUDGET_API = baseUrl+'/api/v1/budgets';
 let allBudgets = [];
 const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);

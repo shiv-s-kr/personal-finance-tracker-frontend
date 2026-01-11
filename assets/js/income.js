@@ -1,11 +1,12 @@
 // income.js - COMPLETE SOLUTION
-const API_BASE = 'https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/income';
+const baseUrl = "http://localhost:8080";
+const API_BASE = baseUrl+'/api/v1/income';
 let allIncomes = [];
 let editMode = false;
 let editingIncomeId = null;
 const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
-let currentUserId = user.id || 1;
+let currentUserId =  user.id ||1;
 let currentPage = 1;
 let totalPages = 1;
 let currentLimit = 10;
@@ -60,7 +61,7 @@ const resetForm = () => {
 async function fetchIncomes(page = 1, limit = 10) {
     try {
         const params = new URLSearchParams({ page, limit });
-        const response = await fetch(`${API_BASE}?${params}`);
+        const response = await fetch(`${API_BASE}?user_id=${currentUserId}&${params}`);
         const result = await response.json();
         return result.success ? result : { data: [], pagination: {} };
     } catch (error) {
@@ -71,7 +72,7 @@ async function fetchIncomes(page = 1, limit = 10) {
 
 async function createIncome(data) {
     try {
-        const response = await fetch(API_BASE, {
+        const response = await fetch(`${API_BASE}?user_id=${currentUserId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -84,7 +85,7 @@ async function createIncome(data) {
 
 async function updateIncomeAPI(id, data) {
     try {
-        const response = await fetch(`${API_BASE}/${id}`, {
+        const response = await fetch(`${API_BASE}/${id}?user_id=${currentUserId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -97,7 +98,7 @@ async function updateIncomeAPI(id, data) {
 
 async function deleteIncomeAPI(id) {
     try {
-        const response = await fetch(`${API_BASE}/${id}`, {
+        const response = await fetch(`${API_BASE}/${id}?user_id=${currentUserId}`, {
             method: 'DELETE'
         });
         return await response.json();
@@ -205,7 +206,7 @@ function exitEditMode() {
 
 async function deleteIncome(id) {
     if (editMode && editingIncomeId !== id) {
-        const confirmExit = confirm("Exit edit mode first?");
+        // const confirmExit = confirm("Exit edit mode first?");
         if (!confirmExit) return;
         exitEditMode();
     }

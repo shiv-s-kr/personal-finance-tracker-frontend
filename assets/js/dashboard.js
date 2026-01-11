@@ -1,93 +1,131 @@
-// dashboard.js - SIMPLE LIVE UPDATES (No SSE/WebSocket)
-const API_BASE = 'https://personal-finance-tracker-seven-gilt.vercel.app/api/v1';
+// dashboard.js
+
+const API_URL = "http://localhost:8080/api/v1/dashboard";
 const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
-let currentUserId = user.id || 1;
-console.log(currentUserId)
-let expenseChart, monthlyChart;
-const REFRESH_INTERVAL = 60000; // 5 seconds
+const USER_ID = user.id || 1;
 
-// Initialize Charts
-function initCharts() {
-  const ctx1 = document.getElementById('expensePieChart').getContext('2d');
-  expenseChart = new Chart(ctx1, {
-    type: 'doughnut',
-    data: { labels: [], datasets: [{ data: [], backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40'] }] },
-    options: { responsive: true, plugins: { legend: { position: 'bottom' } }, animation: false }
-  });
+let expensePieChart;
+let monthlyChart;
 
-  const ctx2 = document.getElementById('monthlyGraph').getContext('2d');
-  monthlyChart = new Chart(ctx2, {
-    type: 'line',
-    data: { labels: [], datasets: [{ label: 'Expenses', data: [], borderColor: '#dc3545', fill: true }] },
-    options: { responsive: true, animation: false }
-  });
-}
+document.addEventListener("DOMContentLoaded", () => {
+  loadDashboard();
+});
 
-// LIVE Refresh Function
-async function refreshDashboard() {
+async function loadDashboard() {
   try {
+    const res = await fetch(`${API_URL}?user_id=${USER_ID}`);
+    const data = await res.json();
+    console.log(data);
 
-    const response = await fetch(`${API_BASE}/dashboard?user_id=${currentUserId}`);
-    const result = await response.json();
+    updateSummary(data.data.summary);
+    updateAlerts(data.data);
+    renderExpensePieChart(data.data.categoryWiseExpenses);
+    renderMonthlyChart(data.data.monthlyExpenses);
 
-    if (result.success) {
-      updateDashboard(result.data);
-    }
   } catch (error) {
-    console.error('❌ Refresh failed:', error);
+    console.error("Dashboard load error:", error);
   }
 }
 
-// Update ALL dashboard elements
-function updateDashboard(data) {
-  // Summary Cards
-  document.getElementById('total-income').textContent = 
-    `₹${parseFloat(data.summary?.total_income || 0).toLocaleString('en-IN')}`;
-  document.getElementById('total-expense').textContent = 
-    `₹${parseFloat(data.summary?.total_expense || 0).toLocaleString('en-IN')}`;
-  
-  const balance = parseFloat(data.summary?.balance || 0);
-  const balanceEl = document.getElementById('balance');
-  balanceEl.textContent = `₹${Math.abs(balance).toLocaleString('en-IN')}`;
-  balanceEl.style.color = balance >= 0 ? '#28a745' : '#dc3545';
+/* =======================
+   SUMMARY CARDS
+======================= */
 
-  // Budget Alerts
-  const alertsEl = document.getElementById('budget-alerts');
+function updateSummary(summary) {
+  document.getElementById("total-income").innerText = `₹${summary.total_income || 0}`;
+  document.getElementById("total-expense").innerText = `₹${summary.total_expense || 0}`;
+  document.getElementById("balance").innerText = `₹${summary.balance || 0}`;
+}
+
+/* =======================
+   BUDGET ALERTS
+======================= */
+
+function updateAlerts(data) {
+  const alerts = data.alerts;
+  const alertList = document.getElementById("budget-alerts");
+  alertList.innerHTML = "";
+  
   if (!data.alerts?.length) {
-    alertsEl.innerHTML = '<li style="background:#28a745;color:white;padding:12px 20px;border-radius:25px;font-weight:600;list-style:none;">🎉 All budgets on track!</li>';
+    alertList.innerHTML = '<li style="background:#28a745;color:white;padding:12px 20px;border-radius:25px;font-weight:600;list-style:none;">🎉 All budgets on track!</li>';
   } else {
-    alertsEl.innerHTML = data.alerts.map(a => 
+    alertList.innerHTML = data.alerts.map(a => 
       `<li style="background:#ff4757;color:white;padding:12px 20px;border-radius:25px;font-weight:600;list-style:none;">
         ⚠️ ${a.category}: Over budget!
       </li>`
     ).join('');
   }
-
-  // Pie Chart
-  const categories = data.categories || [];
-  expenseChart.data.labels = categories.map(c => c.category);
-  expenseChart.data.datasets[0].data = categories.map(c => parseFloat(c.amount));
-  expenseChart.update('none');
+ if(data?.summary?.balance < 0)
+  {
+    alertList.innerHTML = '<li style="background:#28a745;color:white;padding:12px 20px;border-radius:25px;font-weight:600;list-style:none;">🎉 Expenses are more than Income</li>';
+  }
+  alerts.forEach(alert => {
+    const li = document.createElement("li");
+    li.innerText = `${alert.category}: ${alert.percent}% of budget used`;
+    alertList.appendChild(li);
+  });
 }
 
-// Auto-refresh every 5 seconds
-let refreshTimer;
-function startLiveUpdates() {
-  refreshDashboard(); // Initial load
-  refreshTimer = setInterval(refreshDashboard, REFRESH_INTERVAL);
+/* =======================
+   EXPENSE PIE CHART
+======================= */
+
+function renderExpensePieChart(categories = []) {
+  const ctx = document.getElementById("expensePieChart");
+
+  const labels = categories.map(c => c.category);
+  const data = categories.map(c => Number(c.amount));
+
+  if (expensePieChart) expensePieChart.destroy();
+
+  expensePieChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels,
+      datasets: [{
+        data
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "bottom" }
+      }
+    }
+  });
 }
 
-// Cleanup
-function stopLiveUpdates() {
-  if (refreshTimer) clearInterval(refreshTimer);
-}
+/* =======================
+   MONTHLY SPENDING CHART
+======================= */
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-  initCharts();
-  startLiveUpdates();
-  
-  // Stop on page unload
-  window.addEventListener('beforeunload', stopLiveUpdates);
-});
+function renderMonthlyChart(monthlyExpenses = []) {
+  const ctx = document.getElementById("monthlyGraph");
+
+  const labels = monthlyExpenses.map(m => m.month);
+  const data = monthlyExpenses.map(m => Number(m.amount));
+
+  if (monthlyChart) monthlyChart.destroy();
+
+  monthlyChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label: "Monthly Spending",
+        data,
+        fill: false,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}

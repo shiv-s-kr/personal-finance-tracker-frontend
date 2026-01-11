@@ -1,4 +1,5 @@
 // register.js - Complete registration handler with validation
+const baseUrl = "http://localhost:8080";
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registerForm');
     
@@ -73,7 +74,7 @@ function clearErrors() {
 
 async function submitRegistration(name, email, password) {
     try {
-        const response = await fetch('https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/auth/register', {
+        const response = await fetch(baseUrl+'/api/v1/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

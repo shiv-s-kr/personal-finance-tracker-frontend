@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function loadUserProfile() {
     const user = localStorage.getItem('user');
-    console.log(user)
     const profileText = document.getElementById('profile-text');
     const profileLink = document.getElementById('profileLink');
 
