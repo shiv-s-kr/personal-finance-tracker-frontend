@@ -1,5 +1,5 @@
 // income.js - COMPLETE SOLUTION
-const API_BASE = 'http://localhost:8080/api/v1/income';
+const API_BASE = 'https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/income';
 let allIncomes = [];
 let editMode = false;
 let editingIncomeId = null;

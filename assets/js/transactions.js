@@ -1,5 +1,5 @@
 // transactions.js - SIMPLIFIED VERSION
-const TRANSACTIONS_API = 'http://localhost:8080/api/v1/transactions';
+const TRANSACTIONS_API = 'https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/transactions';
 let allTransactions = [];
 let currentPage = 1;
 const userData = localStorage.getItem('user');

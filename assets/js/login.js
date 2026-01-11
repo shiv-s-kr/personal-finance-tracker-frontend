@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const password = document.getElementById('password').value;
 
         try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+            const response = await fetch('https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

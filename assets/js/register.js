@@ -73,7 +73,7 @@ function clearErrors() {
 
 async function submitRegistration(name, email, password) {
     try {
-        const response = await fetch('http://localhost:8080/api/v1/auth/register', {
+        const response = await fetch('https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

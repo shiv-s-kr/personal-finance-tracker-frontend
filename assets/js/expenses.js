@@ -1,5 +1,5 @@
 // expenses.js - COMPLETE CRUD
-const EXPENSE_API = 'http://localhost:8080/api/v1/expenses';
+const EXPENSE_API = 'https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/expenses';
 let allExpenses = [];
 let editMode = false;
 let editingExpenseId = null;

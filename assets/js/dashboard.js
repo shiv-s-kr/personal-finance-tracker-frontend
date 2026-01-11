@@ -1,5 +1,5 @@
 // dashboard.js - SIMPLE LIVE UPDATES (No SSE/WebSocket)
-const API_BASE = 'http://localhost:8080/api/v1';
+const API_BASE = 'https://personal-finance-tracker-seven-gilt.vercel.app/api/v1';
 const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
 let currentUserId = user.id || 1;

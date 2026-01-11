@@ -1,4 +1,4 @@
-const PROFILE_API = 'http://localhost:8080/api/v1/profile';
+const PROFILE_API = 'https://personal-finance-tracker-seven-gilt.vercel.app/api/v1/profile';
 const userData = localStorage.getItem('user');
 const user = JSON.parse(userData);
 let currentUserId = user.id || 1;
