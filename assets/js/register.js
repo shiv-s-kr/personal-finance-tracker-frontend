@@ -1,5 +1,4 @@
 // register.js - Complete registration handler with validation
-console.log("Register Loaded");
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registerForm');
     
@@ -74,7 +73,6 @@ function clearErrors() {
 
 async function submitRegistration(name, email, password) {
     try {
-        console.log("Submission Started");
         const response = await fetch('http://localhost:8080/api/v1/auth/register', {
             method: 'POST',
             headers: {
@@ -84,7 +82,6 @@ async function submitRegistration(name, email, password) {
         });
         
         const data = await response.json();
-        console.log("Resposne",data);
         if (response.status === 201 || response.status === 200) {
             // Success - show message and redirect to login
             document.getElementById('successMsg').textContent = data.message || 'Registration successful! Redirecting to login...';

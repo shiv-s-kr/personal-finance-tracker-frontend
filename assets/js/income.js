@@ -3,7 +3,13 @@ const API_BASE = 'http://localhost:8080/api/v1/income';
 let allIncomes = [];
 let editMode = false;
 let editingIncomeId = null;
-let currentUserId = 1; // Change this to your user ID
+const userData = localStorage.getItem('user');
+const user = JSON.parse(userData);
+let currentUserId = user.id || 1;
+let currentPage = 1;
+let totalPages = 1;
+let currentLimit = 10;
+
 
 // DOM Elements
 const elements = {
@@ -51,16 +57,15 @@ const resetForm = () => {
 };
 
 // ========== API FUNCTIONS ==========
-async function fetchIncomes(page = 1, limit = 50) {
+async function fetchIncomes(page = 1, limit = 10) {
     try {
         const params = new URLSearchParams({ page, limit });
         const response = await fetch(`${API_BASE}?${params}`);
         const result = await response.json();
-            console.log(result)
-        return result.success ? (result.data || []) : [];
+        return result.success ? result : { data: [], pagination: {} };
     } catch (error) {
         console.error('Fetch error:', error);
-        return [];
+        return { data: [], pagination: {} };
     }
 }
 
@@ -242,13 +247,48 @@ function filterIncomes(incomes) {
 
 async function renderIncome() {
     try {
-        allIncomes = await fetchIncomes(1, 100);
-
+        const result = await fetchIncomes(currentPage, currentLimit);
+        allIncomes = result.data || [];
+        const pagination = result.pagination || {};
+        
+        // Update DOM pagination elements (create if not exist)
+        let pageInfo = document.getElementById('page-info');
+        let pageSummary = document.getElementById('page-summary');
+        let prevBtn = document.getElementById('prev-btn');
+        let nextBtn = document.getElementById('next-btn');
+        
+        if (!pageInfo) {
+            const paginationDiv = document.createElement('div');
+            paginationDiv.className = 'pagination-controls';
+            paginationDiv.style.cssText = 'margin-top:20px;text-align:center;padding:15px;';
+            paginationDiv.innerHTML = `
+                <button id="prev-btn" style="padding:8px 16px;margin:0 5px;border:1px solid #ddd;background:white; color:black; border-radius:4px;cursor:pointer;">Previous</button>
+                <span id="page-info" style="margin:0 15px;font-weight:bold;font-size:16px;"></span>
+                <button id="next-btn" style="padding:8px 16px;margin:0 5px;border:1px solid #ddd;background:white;  color:black; border-radius:4px;cursor:pointer;">Next</button>
+                <span id="page-summary" style="margin-left:20px;color:#666;"></span>
+            `;
+            elements.tableBody.parentNode.parentNode.appendChild(paginationDiv);
+            pageInfo = document.getElementById('page-info');
+            pageSummary = document.getElementById('page-summary');
+            prevBtn = document.getElementById('prev-btn');
+            nextBtn = document.getElementById('next-btn');
+        }
+        
+        // Update page info
+        pageInfo.textContent = `Page ${pagination.page || currentPage}`;
+        pageSummary.textContent = `Showing ${allIncomes.length} of ${pagination.total || 0} records`;
+        
+        // Update buttons
+        prevBtn.disabled = (pagination.page || currentPage) <= 1;
+        nextBtn.disabled = (pagination.page || currentPage) >= (pagination.total_pages || 1);
+        prevBtn.onclick = () => changePage(-1);
+        nextBtn.onclick = () => changePage(1);
+        
+        // Render table
         const filtered = filterIncomes(allIncomes);
-
         elements.tableBody.innerHTML = filtered.map(income => `
             <tr>
-                <td>${income.date|| 'N/A'}</td>
+                <td>${income.date || 'N/A'}</td>
                 <td>${income.source || 'N/A'}</td>
                 <td>₹${parseFloat(income.amount || 0).toLocaleString()}</td>
                 <td>${income.frequency || 'N/A'}</td>
@@ -258,12 +298,21 @@ async function renderIncome() {
                     <button onclick="deleteIncome(${income.id})" class="btn-delete">Delete</button>
                 </td>
             </tr>
-        `).join('') || '<tr><td colspan="7" style="text-align:center;padding:20px">No incomes found</td></tr>';
+        `).join('') || '<tr><td colspan="7" style="text-align:center">No incomes found</td></tr>';
+        
     } catch (error) {
         console.error('Render error:', error);
-        elements.tableBody.innerHTML = '<tr><td colspan="7" style="color:red;text-align:center">Error loading data</td></tr>';
     }
 }
+
+function changePage(direction) {
+    const newPage = currentPage + direction;
+    if (newPage >= 1) {
+        currentPage = newPage;
+        renderIncome();
+    }
+}
+
 
 // ========== EVENT LISTENERS ==========
 document.addEventListener('DOMContentLoaded', () => {
@@ -274,11 +323,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderIncome();
 
     // Real-time filtering
-    elements.search.addEventListener('input', renderIncome);
-    elements.filterSource.addEventListener('change', renderIncome);
-    elements.startDate.addEventListener('change', renderIncome);
-    elements.endDate.addEventListener('change', renderIncome);
-
+    elements.search.addEventListener('input', () => { currentPage = 1; renderIncome(); });
+    elements.filterSource.addEventListener('change', () => { currentPage = 1; renderIncome(); });
+    elements.startDate.addEventListener('change', () => { currentPage = 1; renderIncome(); });
+    elements.endDate.addEventListener('change', () => { currentPage = 1; renderIncome(); });
     // Enter key support
     elements.amount.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {

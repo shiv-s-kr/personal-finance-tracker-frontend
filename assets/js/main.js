@@ -7,15 +7,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function loadUserProfile() {
     const user = localStorage.getItem('user');
+    console.log(user)
     const profileText = document.getElementById('profile-text');
     const profileLink = document.getElementById('profileLink');
 
     if (user) {
         try {
             const userData = JSON.parse(user);
-            profileText.textContent = `Hi, ${userData.name || userData.email || 'User'}`;
+            profileText.textContent = `${userData.name || userData.email || 'User'}`;
         } catch (e) {
-            profileText.textContent = 'Hi, User';
+            profileText.textContent = 'User';
         }
     } else {
         profileText.textContent = 'Hi';

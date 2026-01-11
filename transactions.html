@@ -1,284 +1,380 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Transaction History</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Transaction History</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<style>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-*{box-sizing:border-box;}
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: #eef3f8;
+        }
 
-body{
-    margin:0;
-    font-family:"Poppins",sans-serif;
-    background:#eef3f8;
-}
+        /* Header */
+        header {
+            background: #062b47;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
 
-/* Header */
-header{
-    background:#062b47;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 20px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.3);
-}
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
 
-header h1{
-    margin:0;
-    font-size:24px;
-}
+        .profile-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: white;
+        }
 
-.profile-link{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    text-decoration:none;
-    color:white;
-}
+        .profile-link img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+        }
 
-.profile-link img{
-    width:34px;
-    height:34px;
-    border-radius:50%;
-}
+        /* Main */
+        main {
+            padding: 25px;
+        }
 
-/* Main */
-main{
-    padding:25px;
-}
+        /* Section Card */
+        .section-box {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
 
-/* Section Card */
-.section-box{
-    background:white;
-    padding:25px;
-    border-radius:14px;
-    margin-bottom:25px;
-    box-shadow:0 6px 20px rgba(0,0,0,0.15);
-}
+        h2 {
+            margin: 0 0 12px 0;
+            font-weight: 600;
+            color: #062b47;
+        }
 
-h2{
-    margin:0 0 12px 0;
-    font-weight:600;
-    color:#062b47;
-}
+        /* Controls */
+        .filters,
+        .toggle-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
 
-/* Controls */
-.filters, .toggle-buttons{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:10px;
-}
+        input,
+        select,
+        button {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: white;
+            outline: none;
+        }
 
-input,select,button{
-    padding:10px;
-    border-radius:6px;
-    border:1px solid #ccc;
-    background:white;
-    outline:none;
-}
+        input:focus,
+        select:focus {
+            border-color: #0b6fa4;
+        }
 
-input:focus,select:focus{
-    border-color:#0b6fa4;
-}
+        /* Buttons */
+        button {
+            background: #062b47;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-/* Buttons */
-button{
-    background:#062b47;
-    color:white;
-    border:none;
-    cursor:pointer;
-    transition:0.3s;
-}
+        button:hover {
+            background: #0b6fa4;
+        }
 
-button:hover{
-    background:#0b6fa4;
-}
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
 
-/* Table */
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:15px;
-    background:white;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 6px 20px rgba(0,0,0,0.15);
-}
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
 
-th,td{
-    padding:10px;
-    border-bottom:1px solid #ddd;
-}
+        th {
+            background: #062b47;
+            color: white;
+            text-align: left;
+        }
 
-th{
-    background:#062b47;
-    color:white;
-    text-align:left;
-}
+        /* Pagination */
+        .pagination {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
 
-/* Pagination */
-.pagination{
-    margin-top:15px;
-    display:flex;
-    justify-content:center;
-    gap:8px;
-}
+        .pagination button {
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+    </style>
+    <script src="./assets/js/auth.js"></script>
+    <style>
+        header {
+            background: linear-gradient(to right, #041c32, #064663);
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
 
-.pagination button{
-    padding:8px 12px;
-    border-radius:6px;
-}
+        header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: .5px;
+        }
 
-</style>
-<script src="./assets/js/auth.js"></script>
+        .profile-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .profile-link img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* Add to your CSS file */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #064663;
+            color: white;
+            position: relative;
+        }
+
+        .profile-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .profile-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #profileIcon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dropdown-arrow {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 180px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 1000;
+
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: #f8f9ff;
+            color: #667eea;
+            padding-left: 24px;
+        }
+
+        /* Show dropdown on hover */
+        .profile-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .profile-dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .dropdown-content {
+                right: 50%;
+                transform: translateX(50%);
+                min-width: 160px;
+            }
+        }
+    </style>
+    <style>
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #062b47;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #055174;
+            /* Darker shade */
+            /* transform: scale(1.05); Slight zoom effect */
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
+    <header class="navbar">
+        <h1>Transaction History</h1>
 
-<header>
-    <h1>Transaction History</h1>
+        <div class="profile-dropdown">
+            <a href="#" class="profile-link" id="profileLink">
+                <img src="./assets/images/icon2.png" alt="User Icon" id="profileIcon">
+                <span id="profile-text">Hi, User</span>
+                <svg class="dropdown-arrow" viewBox="0 0 24 24">
+                    <path d="M7 10l5 5 5-5z" />
+                </svg>
+            </a>
 
-    <a href="profile.html" class="profile-link">
-        <img src="icon2.png" alt="User Icon">
-        <span id="profile-text">Hi, User</span>
-    </a>
-</header>
+            <!-- Dropdown Menu -->
+            <div class="dropdown-content" id="profileDropdown">
+                <a href="profile.html">View Profile</a>
+                <a href="#" id="logoutLink">Logout</a>
+            </div>
+        </div>
+    </header>
 
-<main>
+    <div style="display: flex; justify-content: center; margin-top: 5px;">
+        <a href="/" class="back-btn">
+            Back
+        </a>
+    </div>
 
-<div class="section-box">
-<h2>Transactions</h2>
 
-<!-- Toggle Buttons -->
-<div class="toggle-buttons">
-    <button onclick="setView('all')">View All</button>
-    <button onclick="setView('expense')">Expenses Only</button>
-    <button onclick="setView('income')">Income Only</button>
-</div>
+    <main>
 
-<!-- Filters -->
-<div class="filters">
-    <input type="text" id="search-category" placeholder="Category / Keyword" onkeyup="renderTransactions()">
-    <input type="number" id="search-amount" placeholder="Amount" onkeyup="renderTransactions()">
-    <input type="date" id="start-date" onchange="renderTransactions()">
-    <input type="date" id="end-date" onchange="renderTransactions()">
-</div>
+        <div class="section-box">
+            <h2>Transactions</h2>
 
-<!-- Table -->
-<table id="transaction-table">
-<thead>
-<tr>
-<th>Date</th>
-<th>Type</th>
-<th>Category / Source</th>
-<th>Amount</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
+            <!-- Toggle Buttons -->
+            <!-- <div class="toggle-buttons">
+                <button onclick="setView('all')">View All</button>
+                <button onclick="setView('expense')">Expenses Only</button>
+                <button onclick="setView('income')">Income Only</button>
+            </div> -->
 
-<!-- Pagination -->
-<div class="pagination" id="pagination"></div>
+            <!-- Filters -->
+            <!-- <div class="filters">
+                <input type="text" id="search-category" placeholder="Category / Keyword" onkeyup="renderTransactions()">
+                <input type="number" id="search-amount" placeholder="Amount" onkeyup="renderTransactions()">
+                <input type="date" id="start-date" onchange="renderTransactions()">
+                <input type="date" id="end-date" onchange="renderTransactions()">
+            </div> -->
 
-</div>
+            <!-- Table -->
+            <table id="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Category / Source</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
 
-</main>
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
 
-<script>
+        </div>
 
-let username = localStorage.getItem('username') || "Deepa";
-document.getElementById('profile-text').innerText = `Hi, ${username}`;
-
-const expenses = JSON.parse(localStorage.getItem(username + '_expenses')) || [];
-const incomes = JSON.parse(localStorage.getItem(username + '_income')) || [];
-
-let allTransactions = [
-    ...expenses.map(e => ({...e, type:'Expense'})),
-    ...incomes.map(i => ({...i, type:'Income'}))
-];
-
-// Sort newest first
-allTransactions.sort((a,b)=>new Date(b.date)-new Date(a.date));
-
-let currentView='all';
-let currentPage=1;
-const itemsPerPage=10;
-
-function setView(view){
-currentView=view;
-currentPage=1;
-renderTransactions();
-}
-
-function renderTransactions(){
-const tbody=document.querySelector('#transaction-table tbody');
-tbody.innerHTML='';
-
-const searchCategory=document.getElementById('search-category').value.toLowerCase();
-const searchAmount=parseFloat(document.getElementById('search-amount').value);
-const startDate=document.getElementById('start-date').value;
-const endDate=document.getElementById('end-date').value;
-
-let filtered=allTransactions.filter(t=>{
-let matchView=(currentView==='all')||
-(currentView==='expense'&&t.type==='Expense')||
-(currentView==='income'&&t.type==='Income');
-
-let matchCategory=(t.category?.toLowerCase().includes(searchCategory))||
-(t.source?.toLowerCase().includes(searchCategory))||
-(t.desc?.toLowerCase().includes(searchCategory));
-
-let matchAmount=!searchAmount||t.amount==searchAmount;
-let matchStart=!startDate||t.date>=startDate;
-let matchEnd=!endDate||t.date<=endDate;
-
-return matchView&&matchCategory&&matchAmount&&matchStart&&matchEnd;
-});
-
-// Pagination
-const totalPages=Math.ceil(filtered.length/itemsPerPage);
-const start=(currentPage-1)*itemsPerPage;
-const end=start+itemsPerPage;
-const pageItems=filtered.slice(start,end);
-
-pageItems.forEach(t=>{
-const tr=document.createElement('tr');
-tr.innerHTML=`
-<td>${t.date}</td>
-<td>${t.type}</td>
-<td>${t.category || t.source}</td>
-<td>₹${t.amount}</td>
-<td>${t.desc || ""}</td>
-`;
-tbody.appendChild(tr);
-});
-
-renderPagination(totalPages);
-}
-
-function renderPagination(totalPages){
-const paginationDiv=document.getElementById('pagination');
-paginationDiv.innerHTML='';
-
-for(let i=1;i<=totalPages;i++){
-const btn=document.createElement('button');
-btn.innerText=i;
-if(i===currentPage)btn.disabled=true;
-btn.onclick=()=>{currentPage=i;renderTransactions();};
-paginationDiv.appendChild(btn);
-}
-}
-
-renderTransactions();
-
-</script>
-
+    </main>
+    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/transactions.js"></script>
 </body>
+
 </html>

@@ -196,7 +196,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background: linear-gradient(135deg, #3a5cf5 0%, #637df5 100%);
+            background: #064663;
             color: white;
             position: relative;
         }
@@ -300,8 +300,8 @@
 <body>
 
 
-    <header class="navbar">
-        <h1>Finance Dashboard</h1>
+  <header class="navbar">
+        <h1>Income Management</h1>
 
         <div class="profile-dropdown">
             <a href="#" class="profile-link" id="profileLink">
@@ -315,11 +315,12 @@
             <!-- Dropdown Menu -->
             <div class="dropdown-content" id="profileDropdown">
                 <a href="profile.html">View Profile</a>
-                <a href="#" id="settingsLink">Settings</a>
                 <a href="#" id="logoutLink">Logout</a>
             </div>
         </div>
     </header>
+
+
 
 
     <main>
@@ -374,80 +375,7 @@
 
     </main>
 
-    <script>
-
-        // ===== Username =====
-        let username = localStorage.getItem('username') || "Deepa";
-        document.getElementById('profile-text').innerText = `Hi, ${username}`;
-
-        // ===== Data =====
-        const income = JSON.parse(localStorage.getItem(username + '_income')) || [{ amount: 50000 }];
-        const expenses = JSON.parse(localStorage.getItem(username + '_expenses')) || [
-            { category: "Rent", amount: 15000 },
-            { category: "Food", amount: 8000 },
-            { category: "Transport", amount: 4000 },
-            { category: "Entertainment", amount: 3000 },
-            { category: "Utilities", amount: 2000 }
-        ];
-
-        // ===== Totals =====
-        const totalIncome = income.reduce((sum, e) => sum + (e.amount || 0), 0);
-        const totalExpense = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
-        const balance = totalIncome - totalExpense;
-
-        document.getElementById("total-income").innerText = `₹${totalIncome}`;
-        document.getElementById("total-expense").innerText = `₹${totalExpense}`;
-        document.getElementById("balance").innerText = `₹${balance}`;
-
-        // ===== Pie Chart =====
-        const ctxPie = document.getElementById('expensePieChart').getContext('2d');
-        new Chart(ctxPie, {
-            type: 'pie',
-            data: {
-                labels: expenses.map(e => e.category),
-                datasets: [{
-                    label: 'Expenses',
-                    data: expenses.map(e => e.amount),
-                    backgroundColor: ['#ff6b6b', '#4d96ff', '#ffd93d', '#6bcf63', '#9b59b6']
-                }]
-            },
-            options: { responsive: true }
-        });
-
-        // ===== Line Graph =====
-        const ctxLine = document.getElementById('monthlyGraph').getContext('2d');
-        new Chart(ctxLine, {
-            type: 'line',
-            data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-                datasets: [{
-                    label: 'Expenses',
-                    data: [12000, 15000, 10000, 18000, 20000, totalExpense],
-                    borderColor: '#4d96ff',
-                    backgroundColor: 'rgba(77,150,255,0.2)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: { responsive: true, scales: { y: { beginAtZero: true } } }
-        });
-
-        // ===== Alerts =====
-        const alertList = document.getElementById('budget-alerts');
-        if (totalExpense > totalIncome * 0.8) {
-            let li = document.createElement('li');
-            li.innerText = "Warning: You have spent more than 80% of your income!";
-            li.style.color = "red";
-            alertList.appendChild(li);
-        } else {
-            let li = document.createElement('li');
-            li.innerText = "You are within your budget. Keep it up!";
-            li.style.color = "green";
-            alertList.appendChild(li);
-        }
-
-    </script>
-
+    <script src="./assets//js/dashboard.js"></script>
 </body>
 
 </html>

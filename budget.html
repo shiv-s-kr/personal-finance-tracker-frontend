@@ -157,18 +157,196 @@
         }
     </style>
     <script src="./assets/js/auth.js"></script>
+    <style>
+        header {
+            background: linear-gradient(to right, #041c32, #064663);
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: .5px;
+        }
+
+        .profile-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .profile-link img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* Add to your CSS file */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #064663;
+            color: white;
+            position: relative;
+        }
+
+        .profile-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .profile-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #profileIcon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dropdown-arrow {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 180px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 1000;
+
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 12px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: #f8f9ff;
+            color: #667eea;
+            padding-left: 24px;
+        }
+
+        /* Show dropdown on hover */
+        .profile-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .profile-dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .dropdown-content {
+                right: 50%;
+                transform: translateX(50%);
+                min-width: 160px;
+            }
+        }
+    </style>
+    <style>
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #062b47;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #055174;
+            /* Darker shade */
+            /* transform: scale(1.05); Slight zoom effect */
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
-    <header>
+    <header class="navbar">
         <h1>Budget Tracker</h1>
 
-        <a href="profile.html" class="profile-link">
-            <img src="icon2.png" alt="User">
-            <span id="profile-text">Hi, User</span>
-        </a>
+        <div class="profile-dropdown">
+            <a href="#" class="profile-link" id="profileLink">
+                <img src="./assets/images/icon2.png" alt="User Icon" id="profileIcon">
+                <span id="profile-text">Hi, User</span>
+                <svg class="dropdown-arrow" viewBox="0 0 24 24">
+                    <path d="M7 10l5 5 5-5z" />
+                </svg>
+            </a>
+
+            <!-- Dropdown Menu -->
+            <div class="dropdown-content" id="profileDropdown">
+                <a href="profile.html">View Profile</a>
+                <a href="#" id="logoutLink">Logout</a>
+            </div>
+        </div>
     </header>
+
+    <div style="display: flex; justify-content: center; margin-top: 5px;">
+        <a href="/" class="back-btn">
+            Back
+        </a>
+    </div>
+
 
     <main>
 
@@ -210,85 +388,8 @@
 
     </main>
 
-    <script>
-
-        let username = localStorage.getItem('username') || "Deepa";
-        document.getElementById('profile-text').innerText = `Hi, ${username}`;
-
-        // Monthly reset
-        const currentMonth = new Date().getMonth();
-        let storedMonth = localStorage.getItem(username + '_budgetMonth');
-        if (storedMonth != currentMonth) {
-            localStorage.removeItem(username + '_budgets');
-            localStorage.setItem(username + '_budgetMonth', currentMonth);
-        }
-
-        let budgets = JSON.parse(localStorage.getItem(username + '_budgets')) || [];
-
-        // SAVE BUDGET
-        function saveBudget() {
-            const category = document.getElementById('category').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-
-            if (!category || !amount) {
-                alert("Please fill all fields");
-                return;
-            }
-
-            const index = budgets.findIndex(b => b.category === category);
-
-            if (index >= 0) {
-                budgets[index].amount = amount;
-            } else {
-                budgets.push({ category, amount, spent: 0 });
-            }
-
-            localStorage.setItem(username + '_budgets', JSON.stringify(budgets));
-
-            document.getElementById('success-msg').innerText = "Budget saved successfully!";
-            setTimeout(() => { document.getElementById('success-msg').innerText = ""; }, 2000);
-
-            document.getElementById('category').value = '';
-            document.getElementById('amount').value = '';
-
-            renderBudgets();
-        }
-
-        // RENDER BUDGET LIST
-        function renderBudgets() {
-            const list = document.getElementById('budget-list');
-            list.innerHTML = '';
-
-            const expenses = JSON.parse(localStorage.getItem(username + '_expenses')) || [];
-
-            budgets.forEach(budget => {
-                const spent = expenses
-                    .filter(e => e.category === budget.category)
-                    .reduce((sum, e) => sum + (e.amount || 0), 0);
-
-                const percent = Math.min((spent / budget.amount) * 100, 100);
-
-                let colorClass = 'green';
-                if (percent >= 100) colorClass = 'red';
-                else if (percent >= 75) colorClass = 'yellow';
-
-                const div = document.createElement('div');
-                div.classList.add('budget-item');
-
-                div.innerHTML = `
-<strong>${budget.category}</strong>: ₹${spent} / ₹${budget.amount}
-<div class="progress-bar-container">
-<div class="progress-bar ${colorClass}" style="width:${percent}%">${Math.round(percent)}%</div>
-</div>`;
-
-                list.appendChild(div);
-            });
-        }
-
-        renderBudgets();
-
-    </script>
-
+    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/budget.js"></script>
 </body>
 
 </html>
