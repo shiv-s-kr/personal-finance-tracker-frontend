@@ -229,8 +229,8 @@ async function renderExpenses() {
                 <td>₹${parseFloat(expense.amount || 0).toLocaleString()}</td>
                 <td>${expense.description || 'N/A'}</td>
                 <td>
-                    <button onclick="editExpense(${expense.id})" class="btn-edit">Edit</button>
-                    <button onclick="deleteExpense(${expense.id})" class="btn-delete">Delete</button>
+                    <button onclick="editExpense(${expense.id})" class="edit-btn">Edit</button>
+                    <button onclick="deleteExpense(${expense.id})" class="delete-btn">Delete</button>
                 </td>
             </tr>
         `).join('') || '<tr><td colspan="5" style="text-align:center">No expenses</td></tr>';

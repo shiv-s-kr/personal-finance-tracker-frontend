@@ -45,9 +45,11 @@ const validateForm = () => {
 };
 
 const showMessage = (message, isSuccess = false) => {
+    console.log("SHow Message : ",message)
     elements.successMsg.textContent = message;
+    console.log(elements.successMsg)
     elements.successMsg.className = isSuccess ? 'success' : 'error';
-    setTimeout(() => elements.successMsg.textContent = '', 4000);
+    setTimeout(() => elements.successMsg.innerHTML = '', 4000);
 };
 
 const resetForm = () => {
